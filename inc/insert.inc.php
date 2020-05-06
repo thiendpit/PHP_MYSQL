@@ -2,13 +2,23 @@
 
 include_once('./db.inc.php');
 
-$title = $_POST['post_title'];
-$desc = $_POST['post_desc'];
-$content = $_POST['post_content'];
+$title = mysqli_real_escape_string($conn, $_POST['post_title']) ;
+$desc = mysqli_real_escape_string($conn, $_POST['post_desc']);
+$content = mysqli_real_escape_string($conn, $_POST['post_content']);
 
-$sql = "INSERT INTO posts (post_title, post_desc, post_content) VALUES ('$title', '$desc', '$content');";
-mysqli_query($conn, $sql);
+$sql = "INSERT INTO posts (post_title, post_desc, post_content) VALUES (?, ?, ?);";
 
-header("Location: ../insertpost.php");
+$stmt = mysqli_stmt_init($conn);
+if(!mysqli_stmt_prepare($stmt, $sql))
+{
+    echo "SQL error!";
+}
+else
+{
+    mysqli_stmt_bind_param($stmt, "sss", $title, $desc, $content);
+    mysqli_stmt_execute(($stmt));
+}
+
+header("Location: ../insertpost.php?inserpost=success");
 
 ?>

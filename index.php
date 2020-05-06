@@ -11,17 +11,44 @@
 </head>
 <body>
     <h1>Welcome !!</h1>
+    <form method="GET">
+        ID
+        <input type="text" name="post_id">
+        <input type="submit">
+    </form>
     <?php
-        $sql = "SELECT * FROM posts WHERE post_id='1' ";
-        $result = mysqli_query($conn, $sql);
-        $resultCheck = mysqli_num_rows($result);
-
-        if($resultCheck > 0) 
+        if(isset($_GET['post_id']))
         {
+            $baihienthi = $_GET['post_id'];
+        }
+        else
+        {
+            $baihienthi = 0;
+        }
+        // create a template
+        $sql = "SELECT * FROM posts WHERE post_id=? ";
+
+        // create a prepared stament
+        $stmt = mysqli_stmt_init($conn);
+        
+        if(!mysqli_stmt_prepare($stmt, $sql))
+        {
+            echo "SQL Statement failed!";
+        }
+        else
+        {
+            // Bind parameters to the placeholder
+            mysqli_stmt_bind_param($stmt, "s", $baihienthi);
+            // Run parameters inside database
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+
             while($row = mysqli_fetch_assoc($result))
             {
-                echo $row['post_id'] . "<br>";
-                echo $row['post_title'] . "<br>";
+                foreach($row as $key => $value)
+                {
+                    echo $key . ": " . $value . "<br>";
+                }
             }
         }
     ?>
