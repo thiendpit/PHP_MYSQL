@@ -19,6 +19,6 @@ else
     mysqli_stmt_execute(($stmt));
 }
 
-header("Location: ../insertpost.php?inserpost=success");
+header("Location: ../insertpost.php?insertpost=success");
 
 ?>
